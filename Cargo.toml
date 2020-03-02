@@ -1,13 +1,5 @@
-[package]
-name = "{{project-name}}"
-version = "0.1.0"
-authors = ["Noogen Team <info.noogen@gmail.com>"]
-edition = "2018"
-license = "CC0-1.0"
-readme = "README.md"
-repository = "https://github.com/noogen-projects/{{project-name}}"
-description = "A Rust web application ..."
-keywords = ["noogen"]
-categories = []
+[workspace]
 
-[dependencies]
+members = [
+    "server",
+]
