@@ -26,6 +26,7 @@ async fn main() -> std::io::Result<()> {
         .service(index)
         .service(get_user)
         .service(add_user)
+        .service(edit_user)
         .service(list_users)
     )
         .bind("127.0.0.1:8080")?
@@ -52,6 +53,17 @@ async fn get_user(pool: web::Data<ConnectionsPool>, id: web::Path<u32>) -> impl 
     match web::block(move || user_dao.get_by_id(user_id)).await {
         Ok(user) => format!("User: {:#?}", user),
         Err(err) => format!("User does not exist. Error: {:?}", err),
+    }
+}
+
+#[post("/user/{id}")]
+async fn edit_user(pool: web::Data<ConnectionsPool>, id: web::Path<u32>, name: web::Json<String>) -> impl Responder {
+    let user_dao = UserDao::new(pool.get_ref().clone());
+    let user = User { id: UserId(id.into_inner()), name: name.into_inner() };
+
+    match web::block(move || user_dao.save(user)).await {
+        Ok(user) => format!("User was saved! User: {:#?}", user),
+        Err(err) => format!("User was not save. Error: {:?}", err),
     }
 }
 

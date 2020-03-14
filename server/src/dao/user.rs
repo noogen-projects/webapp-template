@@ -56,12 +56,20 @@ impl UserService for UserDao {
             Err(err) => return Err(SavingUserError(err.to_string(), user)),
         };
 
-        match insert(&connection, dto::NewUser { name: &user.name }) {
-            Ok(id) => {
-                user.id = UserId(id);
-                Ok(user)
-            },
-            Err(err) => Err(SavingUserError(err.to_string(), user)),
+        if user.id.is_exist() {
+            match update(&connection, dto::User { id: user.id.into(), name: user.name.clone() }) {
+                Ok(is_updated) if is_updated => Ok(user),
+                Ok(_) => Err(SavingUserError("User was not updated".to_string(), user)),
+                Err(err) => Err(SavingUserError(err.to_string(), user)),
+            }
+        } else {
+            match insert(&connection, dto::NewUser { name: &user.name }) {
+                Ok(id) => {
+                    user.id = UserId(id);
+                    Ok(user)
+                },
+                Err(err) => Err(SavingUserError(err.to_string(), user)),
+            }
         }
     }
 }
@@ -87,6 +95,15 @@ pub fn insert(connection: &MysqlConnection, user: dto::NewUser) -> Result<u32, D
             .select(id)
             .get_result(connection)
     })
+}
+
+pub fn update(connection: &MysqlConnection, user: dto::User) -> Result<bool, DieselError> {
+    use crate::dao::schema::users::dsl::*;
+
+    diesel::update(&user)
+        .set(name.eq(&user.name))
+        .execute(connection)
+        .map(|rows| rows > 0)
 }
 
 pub fn list(connection: &MysqlConnection) -> Result<Vec<dto::User>, DieselError> {
