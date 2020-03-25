@@ -13,7 +13,7 @@ impl From<UserId> for u32 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct User {
     pub id: UserId,
     pub name: String,
