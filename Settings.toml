@@ -1,0 +1,2 @@
+database_url = "mysql://webapp:webapp@localhost/webapp"
+app_address = "127.0.0.1:8080"
