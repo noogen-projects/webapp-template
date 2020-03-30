@@ -1,10 +1,14 @@
-use serde::Deserialize;
+use std::str::FromStr;
+use serde::{Deserialize, Deserializer, de::Error};
 use config::{Config, ConfigError, File, Environment};
+use log::LevelFilter;
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
     pub database_url: String,
     pub app_address: String,
+    #[serde(deserialize_with = "deserialize_log_level")]
+    pub log_level: LevelFilter,
 }
 
 impl Settings {
@@ -18,4 +22,12 @@ impl Settings {
             .merge(Environment::with_prefix("APP"))?;
         settings.try_into()
     }
+}
+
+fn deserialize_log_level<'de, D>(deserializer: D) -> Result<LevelFilter, D::Error>
+where
+    D: Deserializer<'de>
+{
+    let level = String::deserialize(deserializer)?;
+    LevelFilter::from_str(&level).map_err(Error::custom)
 }
