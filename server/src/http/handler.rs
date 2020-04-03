@@ -8,11 +8,6 @@ use crate::{
     },
 };
 
-#[get("/")]
-pub async fn index() -> impl Responder {
-    format!("Hello!")
-}
-
 #[post("/user")]
 pub async fn add_user(pool: web::Data<ConnectionsPool>, name: web::Json<String>) -> impl Responder {
     let user_dao = UserDao::new(pool.get_ref().clone());

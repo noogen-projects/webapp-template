@@ -1,5 +1,5 @@
 [package]
-name = "webapp-server"
+name = "webapp-webclient"
 version = "0.1.0"
 authors = ["Noogen Team <info.noogen@gmail.com>"]
 edition = "2018"
@@ -11,14 +11,4 @@ keywords = ["noogen"]
 categories = []
 
 [dependencies]
-actix-web = "2.0.0"
-actix-rt = "1.0.0"
-actix-files = "0.2.1"
-diesel = { version = "1.0.0", features = ["mysql", "r2d2"] }
-serde = { version = "1.0.104", features = ["derive"] }
-config = "0.10.1"
-log = "0.4.8"
-env_logger = "0.7.1"
-
-[dev-dependencies]
-serde_json = "1.0.48"
+yew = { version = "0.14.2", features = ["web_sys"] }

@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate diesel;
 
+use actix_files as fs;
 use actix_web::{App, HttpServer};
 use dao::user::{ConnectionsPool};
 use diesel::r2d2::{Pool, ConnectionManager};
@@ -25,7 +26,7 @@ async fn main() -> std::io::Result<()> {
     info!("Application started on {}", settings.app_address);
     HttpServer::new(move || App::new()
         .data(pool.clone())
-        .service(handler::index)
+        .service(fs::Files::new("/", "./static/").index_file("index.html"))
         .service(handler::get_user)
         .service(handler::add_user)
         .service(handler::edit_user)

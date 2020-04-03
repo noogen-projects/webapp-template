@@ -5,7 +5,7 @@ Setup dependencies and tools:
 ```
 sudo apt install mariadb-server libmysqlclient20 libmysqlclient-dev libssl-dev
 cargo install diesel_cli --no-default-features --features mysql
-cargo install cargo-web
+cargo install wasm-bindgen-cli
 ```
 
 Create database and apply migrations:
