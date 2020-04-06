@@ -14,7 +14,6 @@ mod core;
 mod http;
 mod settings;
 
-
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     let settings = Settings::new().expect("Error read settings");

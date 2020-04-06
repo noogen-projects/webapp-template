@@ -31,13 +31,29 @@ impl Component for Root {
 
     fn view(&self) -> Html {
         let button_text = if self.clicked { "Clicked!" } else { "Click me!" };
-
         html! {
-            <button onclick = &self.onclick>{ button_text }</button>
+            <button class = "mdc-button" onclick = &self.onclick>
+                <span class = "mdc-button__ripple"></span>
+                { button_text }
+            </button>
         }
     }
 }
 
 fn main() {
-    yew::start_app::<Root>();
+    yew::initialize();
+    yew::App::<Root>::new().mount_to_body();
+    js_sys::eval(r#"
+        /* Initialize MDC Web components. */
+        const buttons = document.querySelectorAll(".mdc-button");
+        for (const button of buttons) {
+            mdc.ripple.MDCRipple.attachTo(button);
+        }
+
+        const textFields = document.querySelectorAll(".mdc-text-field");
+        for (const textField of textFields) {
+            mdc.textField.MDCTextField.attachTo(textField);
+        }
+    "#).expect("Cannot eval MDC Web components initialization code");
+    yew::run_loop();
 }
