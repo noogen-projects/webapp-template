@@ -3,45 +3,36 @@ use yew::{html, Callback, MouseEvent, Component, ComponentLink, Html, ShouldRend
 pub struct Button {
     id: String,
     text: String,
-    clicked: bool,
     onclick: Callback<MouseEvent>,
-}
-
-pub enum Msg {
-    Click,
 }
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct ButtonProps {
     pub id: String,
     pub text: String,
+    pub onclick: Callback<MouseEvent>,
 }
 
 impl Component for Button {
-    type Message = Msg;
+    type Message = ();
     type Properties = ButtonProps;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
         Button {
             id: props.id,
             text: props.text,
-            clicked: false,
-            onclick: link.callback(|_| Msg::Click),
+            onclick: props.onclick,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::Click => {
-                self.clicked = true;
-                true // Indicate that the Component should re-render
-            }
-        }
+    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         self.id = props.id;
         self.text = props.text;
+        self.onclick = props.onclick;
         true
     }
 
